@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +18,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.envelops.navigation.Routes
 import kotlin.math.abs
 
 @Composable
 fun EnvelopesScreen(navController: NavController, name: String) {
-    val rows = 5
+    val rows = 8
     val cols = 2
     val envelopes: Array<Array<Any?>> = Array(rows) { Array<Any?>(cols) { null } }
     envelopes[0][0] = "Transport"
@@ -35,21 +35,23 @@ fun EnvelopesScreen(navController: NavController, name: String) {
     envelopes[3][1] = -70.11
     envelopes[4][0] = "Social"
     envelopes[4][1] = -12.13
+    envelopes[5][0] = "Social"
+    envelopes[5][1] = -12.13
+    envelopes[6][0] = "Social"
+    envelopes[6][1] = -12.13
+    envelopes[7][0] = "Social"
+    envelopes[7][1] = -12.13
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Text(text = "Hello $name!")
         Text(text = "Today the date is Thursday")
         Text(text = "Here are your envelopes")
-        for(envelope in envelopes){
-            Envelope(envelope[0].toString(),200.00, envelope[1].toString().toDouble())
-        }
-        Button(
-            onClick = {
-            navController.navigate(Routes.transactionsScreen)
-        }) {
-            Text(text = "Go to transaction view")
+        for (envelope in envelopes) {
+            Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble())
         }
     }
 }
@@ -62,14 +64,14 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
         progress = ((budgetAmount - amount) / budgetAmount).toFloat()
         colour = Color.Green
     } else { // negative progress bar
-        progress = (abs(amount)  / budgetAmount).toFloat()
+        progress = (abs(amount) / budgetAmount).toFloat()
         colour = Color.Red
     }
-    Column (
+    Column(
         modifier = Modifier
             .padding(15.dp)
             .background(Color.LightGray)
-    ){
+    ) {
         Row() {
             Text(text = envelopeName)
             Text(text = "$amount")
