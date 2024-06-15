@@ -1,4 +1,4 @@
-package com.example.envelops.screens
+package com.example.envelops.newTransaction
 
 enum class Category {
     Transport,

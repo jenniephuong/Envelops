@@ -9,12 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.envelops.screens.AccountScreen
-import com.example.envelops.screens.EnvelopesScreen
-import com.example.envelops.screens.NewTransactionScreen
-import com.example.envelops.screens.ReportsScreen
-import com.example.envelops.screens.Settings
-import com.example.envelops.screens.TransactionsScreen
+import com.example.envelops.account.AccountScreen
+import com.example.envelops.envelopes.EnvelopesScreen
+import com.example.envelops.newTransaction.NewTransactionScreen
+import com.example.envelops.reports.ReportsScreen
+import com.example.envelops.settings.Settings
+import com.example.envelops.transactions.TransactionsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
