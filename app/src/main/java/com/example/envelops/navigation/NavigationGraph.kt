@@ -1,5 +1,7 @@
 package com.example.envelops.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -14,6 +16,7 @@ import com.example.envelops.screens.ReportsScreen
 import com.example.envelops.screens.Settings
 import com.example.envelops.screens.TransactionsScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(
@@ -22,7 +25,7 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         modifier = Modifier.padding(paddingValues)
     ) {
         composable(Screens.Envelopes.screen) {
-            EnvelopesScreen(navController, "Jennie")
+            EnvelopesScreen(navController)
         }
         composable(Screens.Transactions.screen) {
             TransactionsScreen(navController)

@@ -3,25 +3,35 @@ package com.example.envelops.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlin.math.abs
 
 @Composable
-fun EnvelopesScreen(navController: NavController, name: String) {
+fun EnvelopesScreen(navController: NavController) {
     val rows = 8
     val cols = 2
     val envelopes: Array<Array<Any?>> = Array(rows) { Array<Any?>(cols) { null } }
@@ -46,11 +56,12 @@ fun EnvelopesScreen(navController: NavController, name: String) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(15.dp)
+
     ) {
-        Text(text = "Hello $name!")
-        Text(text = "Today the date is Thursday")
-        Text(text = "Here are your envelopes")
+        Text(text = "Envelopes", style = MaterialTheme.typography.displaySmall)
         for (envelope in envelopes) {
+            Spacer(modifier = Modifier.padding(5.dp))
             Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble())
         }
     }
@@ -69,22 +80,36 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
     }
     Column(
         modifier = Modifier
-            .padding(15.dp)
+            .clip(
+                RoundedCornerShape(10.dp)
+            )
             .background(Color.LightGray)
+            .padding(10.dp)
     ) {
         Row() {
-            Text(text = envelopeName)
-            Text(text = "$amount")
-            Text(text = "$budgetAmount")
+            Text(text = envelopeName, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "$amount / $budgetAmount",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End,
+                style = MaterialTheme.typography.titleSmall
+            )
         }
         LinearProgressIndicator(
             progress = progress,
             color = colour,
             modifier = Modifier
-                .padding(15.dp)
+                .padding(0.dp, 10.dp, 0.dp, 8.dp)
                 .height(8.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .fillMaxWidth()
         )
     }
+}
+
+@Preview(showBackground = true)
+//@PreviewScreenSizes
+@Composable
+fun PreviewEnvelopesScreen() {
+    EnvelopesScreen(navController = rememberNavController())
 }

@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import com.example.envelops.screens.TransactionsScreen
 
 @Composable
 fun NavigationBar() {
@@ -34,7 +36,8 @@ fun NavigationBar() {
     Scaffold(
         bottomBar = {
             BottomAppBar(
-                containerColor = Color.Yellow
+                containerColor = Color.Gray,
+                modifier = Modifier.height(70.dp)
             ) {
                 IconButton(
                     onClick = {
@@ -77,7 +80,6 @@ fun NavigationBar() {
                 ) {
                     FloatingActionButton(onClick = {
                         navController.navigate(Screens.NewTransaction.screen)
-                        Toast.makeText(context, "Toast here", Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(Icons.Default.Add, contentDescription = null, tint = Color.Yellow)
                     }
@@ -122,4 +124,10 @@ fun NavigationBar() {
     ) { paddingValues ->
         SetupNavGraph(navController, paddingValues)
     }
+}
+
+@Preview
+@Composable
+fun PreviewNavigationBar() {
+    NavigationBar()
 }
