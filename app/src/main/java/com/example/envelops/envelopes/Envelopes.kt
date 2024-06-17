@@ -73,7 +73,7 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
     }
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(10.dp)
     ) {
         Row() {

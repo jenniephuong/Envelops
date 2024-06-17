@@ -1,17 +1,13 @@
 package com.example.envelops.newTransaction
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,22 +30,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.envelops.navigation.Screens
 import com.example.envelops.ui.theme.EnvelopsTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -57,28 +52,16 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTransactionScreen(navController: NavController) {
-    var payee by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var payeeError by remember { mutableStateOf("") }
-    var isPayeeError by remember { mutableStateOf(false) }
-    var amountError by remember { mutableStateOf("") }
-    var isAmountError by remember { mutableStateOf(false) }
-    var categoryError by remember { mutableStateOf("") }
-    var isCategoryError by remember { mutableStateOf(false) }
-
-    val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
+    val viewModel = viewModel<NewTransactionViewModel>()
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    var calendarState = rememberSheetState()
-
-    val optionsArray = ArrayList<String>()
+    val calendarState = rememberSheetState()
 
     CalendarDialog(
         state = calendarState, config = CalendarConfig(monthSelection = true, yearSelection = true),
         selection = CalendarSelection.Date(
-            selectedDate = selectedDate.value
+            selectedDate = viewModel.selectedDate
         ) { newDate ->
-            selectedDate.value = newDate
+            viewModel.updateSelectedDate(newDate)
         },
     )
     EnvelopsTheme {
@@ -97,14 +80,14 @@ fun NewTransactionScreen(navController: NavController) {
                         style = MaterialTheme.typography.bodyLarge
                     )
                     OutlinedTextField(
-                        value = amount,
-                        onValueChange = { amount = it },
+                        value = viewModel.amount,
+                        onValueChange = { viewModel.updateAmount(it) },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                     )
-                    if (isAmountError) {
+                    if (viewModel.isAmountError) {
                         Text(
-                            text = amountError,
-                            color = Color.Red,
+                            text = viewModel.amountError,
+                            color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -117,10 +100,10 @@ fun NewTransactionScreen(navController: NavController) {
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyLarge
                     )
-                    selectedDate.value?.let {
+                    viewModel.selectedDate?.let {
                         OutlinedTextField(
                             value = it.format(formatter),
-                            onValueChange = { amount = it },
+                            onValueChange = { viewModel.updateAmount(it) },
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             readOnly = true,
                             interactionSource = interactionSource
@@ -132,7 +115,6 @@ fun NewTransactionScreen(navController: NavController) {
                     }
                 }
             }
-
             Spacer(modifier = Modifier.padding(8.dp))
             Text(
                 text = "Payee",
@@ -140,13 +122,13 @@ fun NewTransactionScreen(navController: NavController) {
                 style = MaterialTheme.typography.bodyLarge
             )
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = payee,
-                isError = isPayeeError,
-                onValueChange = { payee = it })
-            if (isPayeeError) {
+                value = viewModel.payee,
+                isError = viewModel.isPayeeError,
+                onValueChange = { viewModel.updatePayee(it) })
+            if (viewModel.isPayeeError) {
                 Text(
-                    text = payeeError,
-                    color = Color.Red,
+                    text = viewModel.payeeError,
+                    color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -161,14 +143,11 @@ fun NewTransactionScreen(navController: NavController) {
                     style = MaterialTheme.typography.bodyLarge,
                 )
 
-                val optionsArray = ArrayList<String>()
-                optionsArray.add("Rent")
-                optionsArray.add("Travel")
-                optionsArray.add("Food")
-                optionsArray.add("Social")
-                optionsArray.add("Shopping")
-                val options = listOf("Travel", "Food", "Social", "Shopping")
-                var selectedOptionText by remember { mutableStateOf("Select a category") }
+                viewModel.addCategory("Rent")
+                viewModel.addCategory("Travel")
+                viewModel.addCategory("Food")
+                viewModel.addCategory("Social")
+                viewModel.addCategory("Shopping")
                 var isExpanded by remember { mutableStateOf(false) }
                 ExposedDropdownMenuBox(
                     expanded = isExpanded,
@@ -179,7 +158,7 @@ fun NewTransactionScreen(navController: NavController) {
                             .menuAnchor()
                             .fillMaxWidth(),
                         readOnly = true,
-                        value = selectedOptionText,
+                        value = viewModel.category,
                         onValueChange = {},
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
                         colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -188,23 +167,21 @@ fun NewTransactionScreen(navController: NavController) {
                         expanded = isExpanded,
                         onDismissRequest = { isExpanded = false },
                     ) {
-                        optionsArray.forEach { selectionOption ->
+                        viewModel.categoryArray.forEach { selectionOption ->
                             DropdownMenuItem(
                                 text = { Text(selectionOption) },
                                 onClick = {
-                                    selectedOptionText = selectionOption
-                                    category = selectionOption
+                                    viewModel.updateCategory(selectionOption)
                                     isExpanded = false
                                 })
                         }
                     }
-
                 }
             }
-            if (isCategoryError) {
-                Text(text = (categoryError))
+            if (viewModel.isCategoryError) {
+                Text(text = (viewModel.categoryError))
             }
-            var memo by remember { mutableStateOf("") }
+
             Spacer(modifier = Modifier.padding(8.dp))
             Text(
                 text = "Memo",
@@ -214,8 +191,8 @@ fun NewTransactionScreen(navController: NavController) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text(text = "Optional") },
-                value = memo,
-                onValueChange = { memo = it })
+                value = viewModel.memo,
+                onValueChange = { viewModel.updateMemo(it) })
 
             Spacer(modifier = Modifier.padding(12.dp))
             Row(
@@ -224,46 +201,22 @@ fun NewTransactionScreen(navController: NavController) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Button(onClick = {
+                    navController.navigate(Screens.Transactions.screen)
                 }, colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary)) {
                     Text(text = "Cancel")
                 }
 
-
                 Button(onClick = {
-                    var errorCode: Boolean = false
-                    isPayeeError = false
-                    isAmountError = false
-                    isCategoryError = false
-                    if (payee.isEmpty()) {
-                        isPayeeError = true
-                        payeeError = "Enter a payee"
-                        errorCode = true
-                    }
-                    if (amount.isEmpty()) {
-                        isAmountError = true
-                        amountError = "Enter an amount"
-                        errorCode = true
-                    }
-                    if (category.isEmpty()) {
-                        isCategoryError = true
-                        categoryError = "Select a category"
-                        errorCode = true
-                    }
-
+                    val errorCode = viewModel.validateForm()
                     if (!errorCode) {
-                        isPayeeError = true
-                        payeeError = "TESTING"
-                        isAmountError = false
-                        optionsArray.add("TESTING ELEMENT")
+                        navController.navigate(Screens.Envelopes.screen)
                     }
-
                 }) {
                     Text(text = "Add Transaction")
                 }
             }
         }
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -62,7 +62,7 @@ fun TransactionsScreen(navController: NavController) {
             Header()
             FilterChipGroup()
             Spacer(modifier = Modifier.padding(2.dp))
-            LazyColumn(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            LazyColumn(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
                 for (i in 0..20) {
                     var hasMemo = false
                     if (i % 2 == 0) {

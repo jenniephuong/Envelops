@@ -14,32 +14,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Green2,
-    inversePrimary = Green0,
-    secondary = Green1,
-    tertiary = Gold1,
-    onPrimary = Cream,
-    onSecondary = Cream,
-    onTertiary = Cream,
-    surface = Gold2,
-    background = Green0,
-    onBackground = Cream,
-    onSurface = Cream,
-    primaryContainer = Green0,
-    secondaryContainer = Green1
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Green2,
-    inversePrimary = Green0,
     secondary = Green1,
     tertiary = Gold1,
     onPrimary = Cream,
     onSecondary = Cream,
     onTertiary = Cream,
-    surface = Gold2,
-    background = Green0,
-    onBackground = Cream,
     primaryContainer = Green0,
     onPrimaryContainer = Green2,
     secondaryContainer = Green1,

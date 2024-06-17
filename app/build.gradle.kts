@@ -73,4 +73,6 @@ dependencies {
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
     // CALENDAR
     implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
 }
