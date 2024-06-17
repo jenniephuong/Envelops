@@ -1,6 +1,7 @@
 package com.example.envelops.envelopes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,38 +9,51 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.envelops.ui.theme.EnvelopsTheme
 import kotlin.math.abs
 
 @Composable
 fun EnvelopesScreen(navController: NavController) {
     val envelopes = getEnvelopeData()
+    EnvelopsTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(15.dp)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(15.dp)
-
-    ) {
-        Text(text = "Envelopes", style = MaterialTheme.typography.displaySmall)
-        LazyColumn {
-            for (envelope in envelopes) {
-                item {
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble())
+        ) {
+            Header()
+            LazyColumn {
+                for (envelope in envelopes) {
+                    item {
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble())
+                    }
                 }
             }
         }
@@ -52,21 +66,22 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
     val progress: Float
     if (amount >= 0) { // positive progress bar
         progress = ((budgetAmount - amount) / budgetAmount).toFloat()
-        colour = Color.Green
+        colour = MaterialTheme.colorScheme.secondary
     } else { // negative progress bar
         progress = (abs(amount) / budgetAmount).toFloat()
-        colour = Color.Red
+        colour = MaterialTheme.colorScheme.error
     }
     Column(
         modifier = Modifier
-            .clip(
-                RoundedCornerShape(10.dp)
-            )
-            .background(Color.LightGray)
+            .background(MaterialTheme.colorScheme.background)
             .padding(10.dp)
     ) {
         Row() {
-            Text(text = envelopeName, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = envelopeName,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
             Text(
                 text = "$amount / $budgetAmount",
                 modifier = Modifier.fillMaxWidth(),
@@ -83,6 +98,37 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
                 .clip(RoundedCornerShape(16.dp))
                 .fillMaxWidth()
         )
+    }
+}
+
+@Composable
+fun Header() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Text(text = "Envelopes", style = MaterialTheme.typography.displaySmall)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.Filled.ExitToApp,
+                    contentDescription = "Done icon",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+            IconButton(onClick = {
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Done icon",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        }
     }
 }
 

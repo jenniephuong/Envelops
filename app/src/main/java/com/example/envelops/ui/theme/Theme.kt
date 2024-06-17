@@ -9,35 +9,49 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Green2,
+    inversePrimary = Green0,
+    secondary = Green1,
+    tertiary = Gold1,
+    onPrimary = Cream,
+    onSecondary = Cream,
+    onTertiary = Cream,
+    surface = Gold2,
+    background = Green0,
+    onBackground = Cream,
+    onSurface = Cream,
+    primaryContainer = Green0,
+    secondaryContainer = Green1
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = Green2,
+    inversePrimary = Green0,
+    secondary = Green1,
+    tertiary = Gold1,
+    onPrimary = Cream,
+    onSecondary = Cream,
+    onTertiary = Cream,
+    surface = Gold2,
+    background = Green0,
+    onBackground = Cream,
+    primaryContainer = Green0,
+    onPrimaryContainer = Green2,
+    secondaryContainer = Green1,
+    onSecondaryContainer = Cream,
+    tertiaryContainer = Green00,
 )
 
 @Composable
 fun EnvelopsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -50,9 +64,12 @@ fun EnvelopsTheme(
         else -> LightColorScheme
     }
 
+    // can provide a different value for Spacing depending on the device being used
+//    CompositionLocalProvider(LocalSpacing provides Spacing()) {
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
+//    }
 }

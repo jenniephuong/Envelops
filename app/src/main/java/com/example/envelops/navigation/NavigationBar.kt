@@ -1,5 +1,7 @@
 package com.example.envelops.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -23,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationBar() {
     val navController = rememberNavController()
@@ -126,6 +129,7 @@ fun NavigationBar() {
 
 @Preview
 @Composable
+@RequiresApi(Build.VERSION_CODES.O)
 fun PreviewNavigationBar() {
     NavigationBar()
 }
