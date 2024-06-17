@@ -56,10 +56,6 @@ class NewTransactionViewModel : ViewModel() {
             categoryError = "Select a category"
             errorCode = true
         }
-        if (!errorCode) {
-            isAmountError = true
-            amountError = "COMPLETED TEST"
-        }
         return errorCode
     }
 

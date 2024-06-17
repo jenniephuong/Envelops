@@ -1,6 +1,8 @@
 package com.example.envelops.transactions
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -46,13 +48,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.envelops.newTransaction.NewTransactionViewModel
 import com.example.envelops.ui.theme.EnvelopsTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransactionsScreen(navController: NavController) {
+    val viewModel = viewModel<TransactionsViewModel>()
+    viewModel.addMockData()
+
     EnvelopsTheme {
         Column(
             modifier = Modifier
@@ -62,15 +74,17 @@ fun TransactionsScreen(navController: NavController) {
             Header()
             FilterChipGroup()
             Spacer(modifier = Modifier.padding(2.dp))
-            LazyColumn(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
-                for (i in 0..20) {
-                    var hasMemo = false
-                    if (i % 2 == 0) {
-                        hasMemo = true
-                    }
+            LazyColumn(modifier = Modifier.background(MaterialTheme.colorScheme.secondary)) {
+                for (transaction in viewModel.filterTransactions()) {
                     item {
-                        Spacer(modifier = Modifier.padding(2.dp))
-                        Transaction("20/04", "AndroidStudio", "Subscriptions", -15.71, hasMemo)
+                        Spacer(modifier = Modifier.padding(1.dp))
+                        Transaction(
+                            transaction.date,
+                            transaction.payee,
+                            transaction.category,
+                            transaction.amount.toDouble(),
+                            transaction.memo
+                        )
                     }
                 }
             }
@@ -104,7 +118,7 @@ fun Header() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterChipGroup() {
-    var selectedChip by remember { mutableStateOf<String?>(null) }
+    val viewModel = viewModel<TransactionsViewModel>()
     val chipLabels = listOf("Day", "Week", "Month", "Year")
 
     Row(
@@ -113,12 +127,12 @@ fun FilterChipGroup() {
     ) {
         chipLabels.forEach { label ->
             FilterChip(
-                selected = selectedChip == label,
+                selected = viewModel.selectedChip == label,
                 onClick = {
-                    selectedChip = if (selectedChip == label) null else label
+                    viewModel.selectedChip = if (viewModel.selectedChip == label) null else label
                 },
                 label = { Text(label) },
-                trailingIcon = if (selectedChip == label) {
+                trailingIcon = if (viewModel.selectedChip == label) {
                     {
                         Icon(
                             imageVector = Icons.Filled.Done,
@@ -137,13 +151,14 @@ fun FilterChipGroup() {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Transaction(
-    date: String,
+    date: LocalDate,
     payee: String,
     category: String,
     amount: Double,
-    hasMemo: Boolean
+    memo: String
 ) {
     Column(
         modifier = Modifier
@@ -161,27 +176,27 @@ fun Transaction(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = date,
+                    text = date.format(DateTimeFormatter.ofPattern("dd/MM")),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary
                 )
-                Text(text = "2024")
+                Text(text = date.year.toString())
             }
             Column {
                 Text(text = payee)
                 Text(text = category)
-                if (hasMemo) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (memo.isNotEmpty()) {
                         Icon(
                             Icons.Default.Star,
                             contentDescription = null,
                             modifier = Modifier.size(15.dp),
-
-                            )
-                        Text(text = "memo 1145678iop1")
+                        )
                     }
+                    Text(text = memo)
                 }
             }
             Row(
@@ -189,12 +204,14 @@ fun Transaction(
                 horizontalArrangement = Arrangement.End
 
             ) {
-                Text(text = amount.toString())
+                val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.UK)
+                Text(text = currencyFormatter.format(amount))
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, device = Devices.PIXEL_6)
 @Composable
 fun PreviewTransactionScreen() {
