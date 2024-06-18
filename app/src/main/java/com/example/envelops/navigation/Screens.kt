@@ -7,4 +7,5 @@ sealed class Screens(val screen: String) {
     data object Account : Screens("account")
     data object NewTransaction : Screens("newTransaction")
     data object Settings : Screens("settings")
+    data object SingleEnvelope : Screens("envelope/{envelopeID}")
 }

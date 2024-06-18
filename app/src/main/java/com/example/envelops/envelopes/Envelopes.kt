@@ -1,6 +1,7 @@
 package com.example.envelops.envelopes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.envelops.navigation.Screens
 import com.example.envelops.ui.theme.EnvelopsTheme
 import kotlin.math.abs
 
@@ -52,7 +54,7 @@ fun EnvelopesScreen(navController: NavController) {
                 for (envelope in envelopes) {
                     item {
                         Spacer(modifier = Modifier.padding(5.dp))
-                        Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble())
+                        Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble(), navController)
                     }
                 }
             }
@@ -61,7 +63,7 @@ fun EnvelopesScreen(navController: NavController) {
 }
 
 @Composable
-fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
+fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double, navController: NavController) {
     val colour: Color
     val progress: Float
     if (amount >= 0) { // positive progress bar
@@ -75,6 +77,7 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double) {
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(10.dp)
+            .clickable { navController.navigate("envelope/$envelopeName") }
     ) {
         Row() {
             Text(
@@ -146,11 +149,11 @@ fun getEnvelopeData(): Array<Array<Any?>> {
     envelopes[3][1] = -70.11
     envelopes[4][0] = "Social"
     envelopes[4][1] = -12.13
-    envelopes[5][0] = "Social"
+    envelopes[5][0] = "Gifts"
     envelopes[5][1] = -12.13
-    envelopes[6][0] = "Social"
+    envelopes[6][0] = "Rent"
     envelopes[6][1] = -12.13
-    envelopes[7][0] = "Social"
+    envelopes[7][0] = "Charity"
     envelopes[7][1] = -12.13
     return envelopes
 }

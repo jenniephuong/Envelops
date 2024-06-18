@@ -68,7 +68,7 @@ fun NewTransactionScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
+                .padding(15.dp)
         ) {
             Text(text = "New transaction", style = MaterialTheme.typography.displaySmall)
             Spacer(modifier = Modifier.padding(8.dp))

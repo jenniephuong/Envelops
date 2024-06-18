@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.envelops.account.AccountScreen
 import com.example.envelops.envelopes.EnvelopesScreen
+import com.example.envelops.envelopes.SingleEnvelopeScreen
 import com.example.envelops.newTransaction.NewTransactionScreen
 import com.example.envelops.reports.ReportsScreen
 import com.example.envelops.settings.Settings
@@ -41,6 +42,12 @@ fun SetupNavGraph(navController: NavHostController, paddingValues: PaddingValues
         }
         composable(Screens.Settings.screen) {
             Settings(navController)
+        }
+        composable(Screens.SingleEnvelope.screen) { backStackEntry ->
+            val envelopeID = backStackEntry.arguments?.getString("envelopeID")
+            if (envelopeID != null) {
+                SingleEnvelopeScreen(envelopeID)
+            }
         }
     }
 }

@@ -15,6 +15,13 @@ class TransactionsViewModel : ViewModel() {
     var transactionsArray by mutableStateOf(ArrayList<TransactionModel>())
     var selectedChip by mutableStateOf<String?>(null)
 
+    fun getRandomString(length: Int) : String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..length)
+            .map { allowedChars.random() }
+            .joinToString("")
+    }
+
     fun addTransaction(
         date: LocalDate,
         payee: String,
@@ -22,7 +29,7 @@ class TransactionsViewModel : ViewModel() {
         amount: Double,
         memo: String
     ) {
-        var newTransaction = TransactionModel(date, payee, category, amount, memo)
+        var newTransaction = TransactionModel(getRandomString(6),date, payee, category, amount, memo)
         transactionsArray.add(newTransaction)
     }
 

@@ -79,6 +79,7 @@ fun TransactionsScreen(navController: NavController) {
                     item {
                         Spacer(modifier = Modifier.padding(1.dp))
                         Transaction(
+                            transaction.transactionId,
                             transaction.date,
                             transaction.payee,
                             transaction.category,
@@ -154,6 +155,7 @@ fun FilterChipGroup() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Transaction(
+    transactionId: String,
     date: LocalDate,
     payee: String,
     category: String,
@@ -197,6 +199,7 @@ fun Transaction(
                         )
                     }
                     Text(text = memo)
+                    Text(text = transactionId)
                 }
             }
             Row(
