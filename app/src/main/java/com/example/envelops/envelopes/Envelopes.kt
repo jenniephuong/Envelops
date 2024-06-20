@@ -1,5 +1,8 @@
 package com.example.envelops.envelopes
 
+import android.os.Build
+import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,15 +36,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.envelops.navigation.Screens
+import com.example.envelops.transactions.TransactionsViewModel
 import com.example.envelops.ui.theme.EnvelopsTheme
+import java.time.LocalDate
 import kotlin.math.abs
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EnvelopesScreen(navController: NavController) {
-    val envelopes = getEnvelopeData()
+fun EnvelopesScreen(navController: NavController, envelopesViewModel: EnvelopesViewModel) {
+    envelopesViewModel.addMockData()
     EnvelopsTheme {
         Column(
             modifier = Modifier
@@ -51,10 +58,10 @@ fun EnvelopesScreen(navController: NavController) {
         ) {
             Header()
             LazyColumn {
-                for (envelope in envelopes) {
+                for (envelope in envelopesViewModel.envelopesArray) {
                     item {
                         Spacer(modifier = Modifier.padding(5.dp))
-                        Envelope(envelope[0].toString(), 200.00, envelope[1].toString().toDouble(), navController)
+                        Envelope(envelope, navController, envelopesViewModel)
                     }
                 }
             }
@@ -63,38 +70,37 @@ fun EnvelopesScreen(navController: NavController) {
 }
 
 @Composable
-fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double, navController: NavController) {
-    val colour: Color
-    val progress: Float
-    if (amount >= 0) { // positive progress bar
-        progress = ((budgetAmount - amount) / budgetAmount).toFloat()
-        colour = MaterialTheme.colorScheme.secondary
-    } else { // negative progress bar
-        progress = (abs(amount) / budgetAmount).toFloat()
-        colour = MaterialTheme.colorScheme.error
-    }
+fun Envelope(
+    envelope: EnvelopeModel,
+    navController: NavController,
+    envelopesViewModel: EnvelopesViewModel
+) {
+    envelopesViewModel.changeProgressColour(envelope.amount, envelope.budgetedAmount)
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(10.dp)
-            .clickable { navController.navigate("envelope/$envelopeName") }
+            .clickable {
+                envelopesViewModel.packageEnvelope(envelope)
+                navController.navigate(Screens.SingleEnvelope.screen)
+            }
     ) {
         Row() {
             Text(
-                text = envelopeName,
+                text = envelope.envelopeName,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "$amount / $budgetAmount",
+                text = "${envelope.amount} / ${envelope.budgetedAmount}",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.titleSmall
             )
         }
         LinearProgressIndicator(
-            progress = progress,
-            color = colour,
+            progress = envelopesViewModel.progress,
+            color = envelopesViewModel.colour,
             modifier = Modifier
                 .padding(0.dp, 10.dp, 0.dp, 8.dp)
                 .height(8.dp)
@@ -104,8 +110,10 @@ fun Envelope(envelopeName: String, budgetAmount: Double, amount: Double, navCont
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Header() {
+    val viewModel = viewModel<EnvelopesViewModel>()
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -124,6 +132,7 @@ fun Header() {
                 )
             }
             IconButton(onClick = {
+                viewModel.addEnvelope("Emergency Fund", 150.00, 0.0, "Monthly")
             }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
@@ -135,31 +144,10 @@ fun Header() {
     }
 }
 
-fun getEnvelopeData(): Array<Array<Any?>> {
-    val rows = 8
-    val cols = 2
-    val envelopes: Array<Array<Any?>> = Array(rows) { Array<Any?>(cols) { null } }
-    envelopes[0][0] = "Transport"
-    envelopes[0][1] = 120.00
-    envelopes[1][0] = "Food"
-    envelopes[1][1] = 55.00
-    envelopes[2][0] = "Shopping"
-    envelopes[2][1] = 7.89
-    envelopes[3][0] = "Investments"
-    envelopes[3][1] = -70.11
-    envelopes[4][0] = "Social"
-    envelopes[4][1] = -12.13
-    envelopes[5][0] = "Gifts"
-    envelopes[5][1] = -12.13
-    envelopes[6][0] = "Rent"
-    envelopes[6][1] = -12.13
-    envelopes[7][0] = "Charity"
-    envelopes[7][1] = -12.13
-    return envelopes
-}
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewEnvelopesScreen() {
-    EnvelopesScreen(navController = rememberNavController())
+    val viewModel = viewModel<EnvelopesViewModel>()
+    EnvelopesScreen(navController = rememberNavController(), viewModel)
 }

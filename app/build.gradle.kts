@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -75,4 +76,6 @@ dependencies {
     implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+    implementation ("androidx.core:core-ktx:1.6.0")
+    implementation("androidx.navigation:navigation-compose:2.3.5")
 }

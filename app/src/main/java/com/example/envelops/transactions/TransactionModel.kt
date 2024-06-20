@@ -3,19 +3,11 @@ package com.example.envelops.transactions
 import java.time.LocalDate
 import java.time.temporal.TemporalAmount
 
-class TransactionModel(
-    transactionId: String,
-    date: LocalDate,
-    payee: String,
-    category: String,
-    amount: Double,
-    memo: String
-) {
-    var transactionId = transactionId
-    var date = date
-    var payee = payee
-    var category = category
-    var amount = amount
-    var memo = memo
-
-}
+data class TransactionModel(
+    val transactionId: String,
+    var date: LocalDate,
+    var payee: String,
+    var category: String,
+    var amount: Double,
+    var memo: String
+)
